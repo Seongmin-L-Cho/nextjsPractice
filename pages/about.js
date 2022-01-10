@@ -1,10 +1,10 @@
 import NavBar from "./NavBar";
 
-export default function Home() {
+export default function tomato() {
   return (
     <div>
       <NavBar />
-      <h1>hello</h1>
+      <h1>about</h1>
     </div>
   );
 }
