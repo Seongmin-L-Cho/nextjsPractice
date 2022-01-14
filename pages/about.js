@@ -1,4 +1,4 @@
-import Seo from "../components/Seo";
+import Seo from "../component/Seo";
 
 export default function Potato() {
   return (
