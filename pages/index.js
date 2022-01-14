@@ -1,21 +1,13 @@
 import { useEffect, useState } from "react";
 import Seo from "../component/Seo";
 
-export default function Home() {
-  const [movies, setMovies] = useState();
-  useEffect(() => {
-    (async () => {
-      const { results } = await (await fetch(`/api/movies`)).json(); // next.config.js의 rewrite로 get에서는 안보이게 바뀜
-      setMovies(results);
-    })();
-  }, []);
+export default function Home({ results }) {
   return (
     <div className="container">
       <Seo title="Home" />
-      {!movies && <h4>Loading...</h4>}
-      {movies?.map((movie) => (
+      {results?.map((movie) => (
         <div className="movie" key={movie.id}>
-          <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
+          <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} />
           <h4>{movie.original_title}</h4>
         </div>
       ))}
@@ -35,6 +27,9 @@ export default function Home() {
         .movie:hover img {
           transform: scale(1.05) translateY(-10px);
         }
+        .movie {
+          cursor: pointer;
+        }
         .movie h4 {
           font-size: 18px;
           text-align: center;
@@ -43,3 +38,21 @@ export default function Home() {
     </div>
   );
 }
+
+export async function getServerSideProps() {
+  const { results } = await (
+    await fetch(`http://localhost:3000/api/movies`)
+  ) // page가 유저에게 보이기 전에 props를 받아오는 펑션
+    .json();
+  return {
+    props: {
+      results, //_app.js 의 pageProps에 들어가게 된다
+    },
+  };
+}
+
+// csr -> javascript로 html 이 보임. react.js는 다른 모든걸 렌더링 한다. 브라우저가 자바스크립트를 가녀와서, 클라이언트 사이드가 html을 구성. 그래서 자바스크립트 비활성화시 아무것도
+//  안보이게 됨. 느릴경우 순차구성. react.js 코드가 와야만 나머지가 보임
+// getServerSideProps가 없을경우, 로딩창, 혹은 데이터가 없어도 되는 부분은 보임. pre-rendering
+// getServerSideProps를 사용할 경우 진짜 html로 보이게 만듬. 단 화면 페이지에 아무것도 안보이게 됨. 왜냐면 serverside에서 받아오기 전까지는 걍 아무것도 없음
+// 이건 심지어 api 콜도 안보임 devtool에서!
