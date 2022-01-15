@@ -11,13 +11,17 @@ module.exports = {
       },
     ];
   },
-  // async rewrites() {
-  //   return [
-  //     {
-  //       // redirect : url로 갈떄 url 바꾸기 / rewrite : redirect 하기는 하지만 url을 보이게 바꾸지는 않는다
-  //       source: "/api/movies",
-  //       destination: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`,
-  //     },
-  //   ];
-  // },
+  async rewrites() {
+    return [
+      {
+        // redirect : url로 갈떄 url 바꾸기 / rewrite : redirect 하기는 하지만 url을 보이게 바꾸지는 않는다
+        source: "/api/movies",
+        destination: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`,
+      },
+      {
+        source: "/api/movies/:id",
+        destination: `https://api.themoviedb.org/3/movie/:id?api_key=${API_KEY}`,
+      },
+    ];
+  },
 };
